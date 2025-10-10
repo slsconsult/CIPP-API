@@ -1,6 +1,4 @@
-using namespace System.Net
-
-Function Invoke-ListBreachesTenant {
+function Invoke-ListBreachesTenant {
     <#
     .FUNCTIONALITY
         Entrypoint
@@ -9,8 +7,8 @@ Function Invoke-ListBreachesTenant {
     #>
     [CmdletBinding()]
     param($Request, $TriggerMetadata)
+    $TenantFilter = $Request.Query.tenantFilter
 
-    $TenantFilter = $Request.query.TenantFilter
     $Table = Get-CIPPTable -TableName UserBreaches
     if ($TenantFilter -ne 'AllTenants') {
         $filter = "PartitionKey eq '$TenantFilter'"
@@ -22,13 +20,12 @@ Function Invoke-ListBreachesTenant {
     } catch {
         $usersResults = $null
     }
-    if ($usersResults -eq $null) {
+    if ($null -eq $usersResults) {
         $usersResults = @()
     }
-    # Associate values to output bindings by calling 'Push-OutputBinding'.
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-            StatusCode = [HttpStatusCode]::OK
-            Body       = @($usersResults)
-        })
+    return [HttpResponseContext]@{
+        StatusCode = [HttpStatusCode]::OK
+        Body       = @($usersResults)
+    }
 
 }
