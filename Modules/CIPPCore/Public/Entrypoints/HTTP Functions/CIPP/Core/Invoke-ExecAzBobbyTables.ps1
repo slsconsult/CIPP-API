@@ -12,11 +12,12 @@ function Invoke-ExecAzBobbyTables {
     #>
     [CmdletBinding()]
     param($Request, $TriggerMetadata)
-
     $AllowList = @(
         'Add-AzDataTableEntity'
+        'Add-CIPPAzDataTableEntity'
         'Update-AzDataTableEntity'
         'Get-AzDataTableEntity'
+        'Get-CIPPAzDataTableEntity'
         'Get-AzDataTable'
         'New-AzDataTable'
         'Remove-AzDataTableEntity'
@@ -51,7 +52,7 @@ function Invoke-ExecAzBobbyTables {
         $StatusCode = [HttpStatusCode]::NotFound
     }
 
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = $StatusCode
             Body       = @($Results)
         })
